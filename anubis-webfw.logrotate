@@ -1,0 +1,10 @@
+/var/log/anubis-webfw.log {
+	weekly
+	missingok
+	notifempty
+	compress
+	delaycompress
+	rotate 12
+	copytruncate
+	create 640 anubis anubis
+}

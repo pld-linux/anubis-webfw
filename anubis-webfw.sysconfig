@@ -1,0 +1,50 @@
+# Configuration for the Anubis web AI firewall.
+#
+# This file is read both by systemd (EnvironmentFile=) and by the sysv init
+# script. Use plain KEY=VALUE syntax only - no shell expansion, quoting only
+# around values that need it. Comments start with '#'.
+#
+# Variable names map to anubis(1) command-line flags via the flagenv
+# convention (BIND -> --bind, TARGET -> --target, etc). See:
+#   https://anubis.techaro.lol/docs/admin/installation
+#   https://github.com/TecharoHQ/anubis
+
+# The upstream service to forward valid (non-bot) requests to.
+TARGET=http://localhost:3923
+
+# Address Anubis listens on for incoming HTTP traffic.
+BIND=:8923
+
+# Address that exposes Prometheus metrics.
+METRICS_BIND=:9090
+
+# Difficulty (number of leading zeroes) of the proof-of-work challenge.
+DIFFICULTY=4
+
+# Whether Anubis serves /robots.txt (1 to enable).
+SERVE_ROBOTS_TXT=0
+
+# Path to a custom bot policy file. The package ships an example at
+# /etc/anubis-webfw/botPolicies.yaml. Leave unset to use the built-in policy.
+#POLICY_FNAME=/etc/anubis-webfw/botPolicies.yaml
+
+# Hex-encoded ed25519 private key used to sign challenge cookies.
+# Generate with:  openssl rand -hex 32
+# If left empty, anubis generates a random key per process start, which
+# invalidates client cookies on every restart.
+ED25519_PRIVATE_KEY_HEX=
+
+# Cookie domain (defaults to the request host).
+#COOKIE_DOMAIN=
+
+# Pass through Open Graph metadata from the upstream (1 to enable).
+#OG_PASSTHROUGH=0
+
+# Extra command-line options passed verbatim to /usr/bin/anubis. Used by
+# the systemd unit and the sysv init script.
+OPTIONS=
+
+# Path to the log file. Used only by the sysv init script (systemd sends
+# stderr to journald). Default: /var/log/anubis-webfw.log. If you change
+# this, also adjust /etc/logrotate.d/anubis-webfw accordingly.
+#LOGFILE=/var/log/anubis-webfw.log

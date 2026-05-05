@@ -1,0 +1,112 @@
+#!/bin/sh
+#
+# anubis-webfw	Anubis web AI firewall (proof-of-work bot blocker)
+#
+# chkconfig:	345 80 20
+# description:	Anubis is a web AI firewall utility that weighs the soul of \
+#		your connection using one or more challenges to protect \
+#		upstream resources from scraper bots.
+# processname:	anubis
+# config:	/etc/sysconfig/anubis-webfw
+# pidfile:	/var/run/anubis-webfw.pid
+
+# Source function library
+. /etc/rc.d/init.d/functions
+
+# Get network config
+. /etc/sysconfig/network
+
+# Defaults; any of these (LOGFILE, OPTIONS, ...) can be overridden in
+# /etc/sysconfig/anubis-webfw which is sourced below.
+SERVICE=anubis-webfw
+LOCKFILE=/var/lock/subsys/$SERVICE
+PIDFILE=/var/run/$SERVICE.pid
+LOGFILE=/var/log/$SERVICE.log
+PROG=/usr/bin/anubis
+
+# Get service config; KEY=VALUE format, exported into the daemon's environment.
+if [ -f /etc/sysconfig/anubis-webfw ]; then
+	set -a
+	. /etc/sysconfig/anubis-webfw
+	set +a
+fi
+
+# Check that networking is up
+if is_yes "${NETWORKING}"; then
+	if [ ! -f /var/lock/subsys/network -a "$1" != stop -a "$1" != status ]; then
+		msg_network_down "Anubis"
+		exit 1
+	fi
+else
+	exit 0
+fi
+
+start() {
+	if [ -f "$LOCKFILE" ]; then
+		msg_already_running "Anubis"
+		return
+	fi
+	msg_starting "Anubis"
+	: > "$PIDFILE"
+	chown anubis:anubis "$PIDFILE"
+	chmod 644 "$PIDFILE"
+	# Use start-stop-daemon directly. PLD's daemon() routes through initlog,
+	# which re-parses the command and mangles the sh -c quoting required for
+	# the stderr redirection below.
+	/sbin/start-stop-daemon --start --quiet --background \
+		--make-pidfile --pidfile "$PIDFILE" \
+		--chuid anubis \
+		--startas /bin/sh -- \
+		-c "exec $PROG $OPTIONS >>$LOGFILE 2>&1" && ok || fail
+	RETVAL=$?
+	[ $RETVAL -eq 0 ] && touch "$LOCKFILE"
+}
+
+stop() {
+	if [ ! -f "$LOCKFILE" ]; then
+		msg_not_running "Anubis"
+		return
+	fi
+	msg_stopping "Anubis"
+	killproc --pidfile "$PIDFILE" anubis
+	rm -f "$LOCKFILE" "$PIDFILE" >/dev/null 2>&1
+}
+
+condrestart() {
+	if [ -f "$LOCKFILE" ]; then
+		stop
+		start
+	else
+		msg_not_running "Anubis"
+		RETVAL=$1
+	fi
+}
+
+RETVAL=0
+case "$1" in
+  start)
+	start
+	;;
+  stop)
+	stop
+	;;
+  restart)
+	stop
+	start
+	;;
+  try-restart)
+	condrestart 0
+	;;
+  force-reload)
+	condrestart 7
+	;;
+  status)
+	status --pidfile "$PIDFILE" anubis
+	exit $?
+	;;
+  *)
+	msg_usage "$0 {start|stop|restart|try-restart|force-reload|status}"
+	exit 3
+esac
+
+exit $RETVAL

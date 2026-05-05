@@ -1,0 +1,33 @@
+[Unit]
+Description=Anubis web AI firewall (proof-of-work bot blocker)
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+User=anubis
+Group=anubis
+EnvironmentFile=/etc/sysconfig/anubis-webfw
+ExecStart=/usr/bin/anubis $OPTIONS
+Restart=on-failure
+RestartSec=5s
+LimitNOFILE=65536
+RuntimeDirectory=anubis
+RuntimeDirectoryMode=0755
+StateDirectory=anubis
+StateDirectoryMode=0755
+NoNewPrivileges=yes
+PrivateTmp=yes
+ProtectSystem=strict
+ProtectHome=yes
+ProtectKernelTunables=yes
+ProtectKernelModules=yes
+ProtectControlGroups=yes
+RestrictAddressFamilies=AF_UNIX AF_INET AF_INET6
+RestrictNamespaces=yes
+RestrictRealtime=yes
+SystemCallFilter=@system-service
+SystemCallErrorNumber=EPERM
+
+[Install]
+WantedBy=multi-user.target
