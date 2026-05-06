@@ -6,7 +6,7 @@ Summary:	Anubis web AI firewall - proof-of-work bot blocker
 Summary(pl.UTF-8):	Anubis - zapora przeciwko botom AI z wyzwaniem proof-of-work
 Name:		anubis-webfw
 Version:	1.25.0
-Release:	1
+Release:	2
 License:	MIT
 Group:		Networking/Daemons/HTTP
 #Source0Download: https://github.com/TecharoHQ/anubis/releases
@@ -134,4 +134,4 @@ fi
 %attr(755,root,root) %{_bindir}/anubis-iplist2rule
 %{systemdunitdir}/anubis-webfw.service
 %{_datadir}/anubis-webfw
-%attr(640,anubis,anubis) %ghost /var/log/anubis-webfw.log
+%attr(640,anubis,logs) %ghost /var/log/anubis-webfw.log

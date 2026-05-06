@@ -47,6 +47,11 @@ start() {
 		return
 	fi
 	msg_starting "Anubis"
+	if [ ! -e "$LOGFILE" ]; then
+		: > "$LOGFILE"
+		chown anubis:logs "$LOGFILE"
+		chmod 640 "$LOGFILE"
+	fi
 	: > "$PIDFILE"
 	chown anubis:anubis "$PIDFILE"
 	chmod 644 "$PIDFILE"
