@@ -1,5 +1,4 @@
 /var/log/anubis-webfw.log {
-	weekly
 	missingok
 	notifempty
 	compress
