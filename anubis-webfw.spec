@@ -5,19 +5,19 @@
 Summary:	Anubis web AI firewall - proof-of-work bot blocker
 Summary(pl.UTF-8):	Anubis - zapora przeciwko botom AI z wyzwaniem proof-of-work
 Name:		anubis-webfw
-Version:	1.25.0
-Release:	2
+Version:	1.27.0
+Release:	1
 License:	MIT
 Group:		Networking/Daemons/HTTP
 #Source0Download: https://github.com/TecharoHQ/anubis/releases
 Source0:	https://github.com/TecharoHQ/anubis/releases/download/v%{version}/anubis-src-vendor-npm-%{version}.tar.gz
-# Source0-md5:	e0f17ebee4f7ae72c9581a87f67ddf72
+# Source0-md5:	b03a7f8f46d20c478fa3963e5d074382
 Source1:	%{name}.init
 Source2:	%{name}.sysconfig
 Source3:	%{name}.service
 Source4:	%{name}.logrotate
 URL:		https://anubis.techaro.lol/
-BuildRequires:	golang >= 1.24.2
+BuildRequires:	golang >= 1.26.3
 BuildRequires:	rpm-build >= 4.6
 BuildRequires:	rpmbuild(macros) >= 2.009
 BuildRequires:	tar >= 1:1.22
