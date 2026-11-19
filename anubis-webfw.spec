@@ -5,23 +5,21 @@
 Summary:	Anubis web AI firewall - proof-of-work bot blocker
 Summary(pl.UTF-8):	Anubis - zapora przeciwko botom AI z wyzwaniem proof-of-work
 Name:		anubis-webfw
-Version:	1.27.0
+Version:	1.28.2
 Release:	1
 License:	MIT
 Group:		Networking/Daemons/HTTP
 #Source0Download: https://github.com/TecharoHQ/anubis/releases
 Source0:	https://github.com/TecharoHQ/anubis/releases/download/v%{version}/anubis-src-vendor-npm-%{version}.tar.gz
-# Source0-md5:	b03a7f8f46d20c478fa3963e5d074382
+# Source0-md5:	7b0d63cd4eb32d352beef833d8c4a027
 Source1:	%{name}.init
 Source2:	%{name}.sysconfig
 Source3:	%{name}.service
 Source4:	%{name}.logrotate
 URL:		https://anubis.techaro.lol/
-BuildRequires:	golang >= 1.26.3
+BuildRequires:	golang >= 1.27.3
 BuildRequires:	rpm-build >= 4.6
 BuildRequires:	rpmbuild(macros) >= 2.009
-BuildRequires:	tar >= 1:1.22
-BuildRequires:	xz
 Requires(post,preun):	/sbin/chkconfig
 Requires(post,preun,postun):	systemd-units >= 38
 Requires(postun):	/usr/sbin/groupdel
@@ -78,7 +76,7 @@ LDFLAGS="-X 'github.com/TecharoHQ/anubis.Version=v%{version}'"
 
 %install
 rm -rf $RPM_BUILD_ROOT
-install -d $RPM_BUILD_ROOT{%{_bindir},%{_sysconfdir}/{anubis-webfw,logrotate.d},/etc/{rc.d/init.d,sysconfig},%{systemdunitdir},%{_datadir}/anubis-webfw,/var/log}
+install -d $RPM_BUILD_ROOT{%{_bindir},%{_sysconfdir}/{anubis-webfw,logrotate.d},/etc/{rc.d/init.d,sysconfig},%{systemdunitdir},%{_datadir}/anubis-webfw,/var/{lib/anubis,log}}
 
 install -p target/anubis		$RPM_BUILD_ROOT%{_bindir}/anubis
 install -p target/robots2policy	$RPM_BUILD_ROOT%{_bindir}/anubis-robots2policy
@@ -135,3 +133,4 @@ fi
 %{systemdunitdir}/anubis-webfw.service
 %{_datadir}/anubis-webfw
 %attr(640,anubis,logs) %ghost /var/log/anubis-webfw.log
+%dir %attr(755,anubis,anubis) /var/lib/anubis
